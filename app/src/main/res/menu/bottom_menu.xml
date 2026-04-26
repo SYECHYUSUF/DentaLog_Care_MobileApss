@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_inventory"
+        android:icon="@drawable/home"
+        android:title="Inventory" />
+    <item
+        android:id="@+id/nav_usage"
+        android:icon="@drawable/log"
+        android:title="Usage Log" />
+    <item
+        android:id="@+id/nav_maintenance"
+        android:icon="@drawable/tang"
+        android:title="Maintenance" />
+</menu>

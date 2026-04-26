@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#1976D2</color> <!-- Blue -->
+    <color name="primaryLightColor">#63A4FF</color>
+    <color name="primaryDarkColor">#004BA0</color>
+    <color name="secondaryColor">#00ACC1</color> <!-- Cyan -->
+    <color name="secondaryLightColor">#5DDEF4</color>
+    <color name="secondaryDarkColor">#007C91</color>
+    <color name="primaryTextColor">#FFFFFF</color>
+    <color name="secondaryTextColor">#2C3E50</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="warm_bg">#F0F4F8</color> <!-- Adjusted to match blue theme -->
+    <color name="liquid_glass">#33FFFFFF</color>
+</resources>
