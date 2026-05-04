@@ -97,6 +97,13 @@ public class InventoryFragment extends Fragment {
                 Toast.makeText(getContext(), "Alat telah diperbaiki", Toast.LENGTH_SHORT).show();
                 refreshData();
             }
+
+            @Override
+            public void onUseClick(ToolModel tool) {
+                dbHelper.incrementUsage(tool.getId());
+                Toast.makeText(getContext(), "Alat digunakan: " + tool.getName(), Toast.LENGTH_SHORT).show();
+                refreshData();
+            }
         });
         recyclerView.setAdapter(adapter);
     }

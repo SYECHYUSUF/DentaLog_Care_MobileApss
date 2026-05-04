@@ -1,11 +1,15 @@
 package com.aditya.smartdental;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.button.MaterialButton;
@@ -18,6 +22,20 @@ public class AddEditActivity extends AppCompatActivity {
     private ImageView ivToolImage;
     private DatabaseHelper dbHelper;
     private ToolModel existingTool;
+    private String selectedImagePath = null;
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        selectedImagePath = imageUri.toString();
+                        ivToolImage.setImageURI(imageUri);
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +55,17 @@ public class AddEditActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         // Setup Dropdown Categories
-        String[] categories = {"Eskavator", "Tang Ekstraksi", "Sonde Dental"};
+        String[] categories = {
+            "Diagnostic",
+            "Conservative",
+            "Oral Surgery",
+            "Endodontics",
+            "Periodontics",
+            "Prosthodontics",
+            "Orthodontics",
+            "Pedodontics",
+            "General / Others"
+        };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, categories);
         acType.setAdapter(adapter);
 
@@ -46,6 +74,10 @@ public class AddEditActivity extends AppCompatActivity {
             if (existingTool != null) {
                 etName.setText(existingTool.getName());
                 acType.setText(existingTool.getType(), false);
+                selectedImagePath = existingTool.getImagePath();
+                if (selectedImagePath != null) {
+                    ivToolImage.setImageURI(Uri.parse(selectedImagePath));
+                }
                 btnSave.setText("UPDATE ALAT");
                 btnDelete.setVisibility(View.VISIBLE);
             }
@@ -55,15 +87,23 @@ public class AddEditActivity extends AppCompatActivity {
         
         btnDelete.setOnClickListener(v -> {
             if (existingTool != null) {
-                dbHelper.deleteTool(existingTool.getId());
-                Toast.makeText(this, "Alat berhasil dihapus", Toast.LENGTH_SHORT).show();
-                finish();
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("Hapus Alat")
+                        .setMessage("Apakah Anda yakin ingin menghapus alat ini?")
+                        .setPositiveButton("Ya", (dialog, which) -> {
+                            dbHelper.deleteTool(existingTool.getId());
+                            Toast.makeText(this, "Alat berhasil dihapus", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .setNegativeButton("Tidak", null)
+                        .show();
             }
         });
 
         findViewById(R.id.cardImagePicker).setOnClickListener(v -> {
-            // Simple toast for image picker placeholder
-            Toast.makeText(this, "Membuka Galeri...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
         });
     }
 
@@ -77,10 +117,11 @@ public class AddEditActivity extends AppCompatActivity {
         }
 
         if (existingTool == null) {
-            dbHelper.insertTool(new ToolModel(name, type, 0, "Available"));
+            dbHelper.insertTool(new ToolModel(name, type, 0, "Available", selectedImagePath));
             Toast.makeText(this, "Alat Baru Ditambahkan", Toast.LENGTH_SHORT).show();
         } else {
-            ToolModel updatedTool = new ToolModel(existingTool.getId(), name, type, existingTool.getUsageCount(), existingTool.getStatus());
+            ToolModel updatedTool = new ToolModel(existingTool.getId(), name, type, 
+                    existingTool.getUsageCount(), existingTool.getStatus(), selectedImagePath);
             dbHelper.updateTool(updatedTool);
             Toast.makeText(this, "Data Berhasil Diperbarui", Toast.LENGTH_SHORT).show();
         }

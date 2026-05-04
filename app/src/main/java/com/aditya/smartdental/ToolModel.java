@@ -13,20 +13,23 @@ public class ToolModel implements Parcelable {
     private String type;
     private int usageCount;
     private String status;
+    private String imagePath; // New field for image path
 
-    public ToolModel(int id, String name, String type, int usageCount, String status) {
+    public ToolModel(int id, String name, String type, int usageCount, String status, String imagePath) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.usageCount = usageCount;
         this.status = status;
+        this.imagePath = imagePath;
     }
 
-    public ToolModel(String name, String type, int usageCount, String status) {
+    public ToolModel(String name, String type, int usageCount, String status, String imagePath) {
         this.name = name;
         this.type = type;
         this.usageCount = usageCount;
         this.status = status;
+        this.imagePath = imagePath;
     }
 
     protected ToolModel(Parcel in) {
@@ -35,6 +38,7 @@ public class ToolModel implements Parcelable {
         type = in.readString();
         usageCount = in.readInt();
         status = in.readString();
+        imagePath = in.readString();
     }
 
     public static final Creator<ToolModel> CREATOR = new Creator<ToolModel>() {
@@ -54,7 +58,9 @@ public class ToolModel implements Parcelable {
     public String getType() { return type; }
     public int getUsageCount() { return usageCount; }
     public String getStatus() { return status; }
+    public String getImagePath() { return imagePath; }
     public void setStatus(String status) { this.status = status; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
     @Override
     public int describeContents() { return 0; }
@@ -66,5 +72,6 @@ public class ToolModel implements Parcelable {
         dest.writeString(type);
         dest.writeInt(usageCount);
         dest.writeString(status);
+        dest.writeString(imagePath);
     }
 }
